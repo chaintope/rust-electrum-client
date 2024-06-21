@@ -3,8 +3,8 @@
 use std::borrow::Borrow;
 use std::convert::TryInto;
 
-use bitcoin::consensus::encode::{deserialize, serialize};
-use bitcoin::{block, Script, Transaction, Txid};
+use tapyrus::consensus::encode::{deserialize, serialize};
+use tapyrus::{block, Script, Transaction, Txid};
 
 use batch::Batch;
 use types::*;
@@ -94,10 +94,10 @@ pub trait ElectrumApi {
     /// Tries to fetch `count` block headers starting from `start_height`.
     fn block_headers(&self, start_height: usize, count: usize) -> Result<GetHeadersRes, Error>;
 
-    /// Estimates the fee required in **Bitcoin per kilobyte** to confirm a transaction in `number` blocks.
+    /// Estimates the fee required in **TPC per kilobyte** to confirm a transaction in `number` blocks.
     fn estimate_fee(&self, number: usize) -> Result<f64, Error>;
 
-    /// Returns the minimum accepted fee by the server's node in **Bitcoin, not Satoshi**.
+    /// Returns the minimum accepted fee by the server's node in **TPC, not tapyrus**.
     fn relay_fee(&self) -> Result<f64, Error>;
 
     /// Subscribes to notifications for activity on a specific *scriptPubKey*.

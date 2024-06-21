@@ -1,19 +1,19 @@
 //! Utilities helping to handle Electrum-related data.
 
-use bitcoin::hash_types::TxMerkleNode;
-use bitcoin::hashes::sha256d::Hash as Sha256d;
-use bitcoin::hashes::Hash;
-use bitcoin::Txid;
+use tapyrus::hash_types::TxMerkleNode;
+use tapyrus::hashes::sha256d::Hash as Sha256d;
+use tapyrus::hashes::Hash;
+use tapyrus::Txid;
 use types::GetMerkleRes;
 
 /// Verifies a Merkle inclusion proof as retrieved via [`transaction_get_merkle`] for a transaction with the
-/// given `txid` and `merkle_root` as included in the [`BlockHeader`].
+/// given `txid` and `merkle_root` as included in the [`Header`].
 ///
 /// Returns `true` if the transaction is included in the corresponding block, and `false`
 /// otherwise.
 ///
 /// [`transaction_get_merkle`]: crate::ElectrumApi::transaction_get_merkle
-/// [`BlockHeader`]: bitcoin::BlockHeader
+/// [`Header`]: tapyrus::Header
 pub fn validate_merkle_proof(
     txid: &Txid,
     merkle_root: &TxMerkleNode,
