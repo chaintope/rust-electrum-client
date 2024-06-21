@@ -1,6 +1,6 @@
 #![warn(missing_docs)]
 
-//! This library provides an extendable Bitcoin-Electrum client that supports batch calls,
+//! This library provides an extendable Tapyrus-Electrum client that supports batch calls,
 //! notifications and multiple transport methods.
 //!
 //! By default this library is compiled with support for SSL servers using [`rustls`](https://docs.rs/rustls) and support for
@@ -19,7 +19,6 @@
 //! # Ok::<(), electrum_client::Error>(())
 //! ```
 
-pub extern crate bitcoin;
 extern crate core;
 extern crate log;
 #[cfg(feature = "use-openssl")]
@@ -31,6 +30,7 @@ extern crate openssl;
 extern crate rustls;
 extern crate serde;
 extern crate serde_json;
+pub extern crate tapyrus;
 
 #[cfg(any(feature = "use-rustls", feature = "default"))]
 extern crate webpki_roots;

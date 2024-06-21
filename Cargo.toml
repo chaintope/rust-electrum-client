@@ -1,13 +1,13 @@
 [package]
 name = "electrum-client"
-version = "0.20.0"
+version = "0.1.0"
 authors = ["Alekos Filini <alekos.filini@gmail.com>"]
 license = "MIT"
-homepage = "https://github.com/MagicalBitcoin/rust-electrum-client"
-repository = "https://github.com/MagicalBitcoin/rust-electrum-client"
+homepage = "https://github.com/chaintope/tapyrus-electrum-client"
+repository = "https://github.com/chaintope/tapyrus-electrum-client"
 documentation = "https://docs.rs/electrum-client/"
-description = "Bitcoin Electrum client library. Supports plaintext, TLS and Onion servers."
-keywords = ["bitcoin", "electrum"]
+description = "Tapyrus Electrum client library. Supports plaintext, TLS and Onion servers."
+keywords = ["tapyrus", "electrum"]
 readme = "README.md"
 rust-version = "1.63.0"
 
@@ -19,7 +19,7 @@ path = "src/lib.rs"
 
 [dependencies]
 log = "^0.4"
-bitcoin = { version = "0.32", features = ["serde"] }
+tapyrus = { git = "https://github.com/chaintope/rust-tapyrus", branch = "update_on_bitcoin_0.31.x", features = ["serde"] }
 serde = { version = "^1.0", features = ["derive"] }
 serde_json = { version = "^1.0" }
 

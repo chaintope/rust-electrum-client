@@ -2,7 +2,7 @@
 //!
 //! This module contains definitions and helper functions used when making batch calls.
 
-use bitcoin::{Script, Txid};
+use tapyrus::{Script, Txid};
 
 use types::{Call, Param, ToElectrumScriptHash};
 
