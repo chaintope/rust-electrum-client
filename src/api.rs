@@ -4,7 +4,7 @@ use std::borrow::Borrow;
 use std::convert::TryInto;
 
 use tapyrus::consensus::encode::{deserialize, serialize};
-use tapyrus::{block, Script, Transaction, Txid};
+use tapyrus::{block, MalFixTxid, Script, Transaction};
 
 use batch::Batch;
 use types::*;
@@ -30,7 +30,7 @@ pub trait ElectrumApi {
     }
 
     /// Gets the transaction with `txid`. Returns an error if not found.
-    fn transaction_get(&self, txid: &Txid) -> Result<Transaction, Error> {
+    fn transaction_get(&self, txid: &MalFixTxid) -> Result<Transaction, Error> {
         Ok(deserialize(&self.transaction_get_raw(txid)?)?)
     }
 
@@ -40,7 +40,7 @@ pub trait ElectrumApi {
     fn batch_transaction_get<'t, I>(&self, txids: I) -> Result<Vec<Transaction>, Error>
     where
         I: IntoIterator + Clone,
-        I::Item: Borrow<&'t Txid>,
+        I::Item: Borrow<&'t MalFixTxid>,
     {
         self.batch_transaction_get_raw(txids)?
             .iter()
@@ -63,7 +63,7 @@ pub trait ElectrumApi {
     }
 
     /// Broadcasts a transaction to the network.
-    fn transaction_broadcast(&self, tx: &Transaction) -> Result<Txid, Error> {
+    fn transaction_broadcast(&self, tx: &Transaction) -> Result<MalFixTxid, Error> {
         let buffer: Vec<u8> = serialize(tx);
         self.transaction_broadcast_raw(&buffer)
     }
@@ -167,7 +167,7 @@ pub trait ElectrumApi {
         I::Item: Borrow<&'s Script>;
 
     /// Gets the raw bytes of a transaction with `txid`. Returns an error if not found.
-    fn transaction_get_raw(&self, txid: &Txid) -> Result<Vec<u8>, Error>;
+    fn transaction_get_raw(&self, txid: &MalFixTxid) -> Result<Vec<u8>, Error>;
 
     /// Batch version of [`transaction_get_raw`](#method.transaction_get_raw).
     ///
@@ -175,7 +175,7 @@ pub trait ElectrumApi {
     fn batch_transaction_get_raw<'t, I>(&self, txids: I) -> Result<Vec<Vec<u8>>, Error>
     where
         I: IntoIterator + Clone,
-        I::Item: Borrow<&'t Txid>;
+        I::Item: Borrow<&'t MalFixTxid>;
 
     /// Batch version of [`block_header_raw`](#method.block_header_raw).
     ///
@@ -195,10 +195,10 @@ pub trait ElectrumApi {
         I::Item: Borrow<usize>;
 
     /// Broadcasts the raw bytes of a transaction to the network.
-    fn transaction_broadcast_raw(&self, raw_tx: &[u8]) -> Result<Txid, Error>;
+    fn transaction_broadcast_raw(&self, raw_tx: &[u8]) -> Result<MalFixTxid, Error>;
 
     /// Returns the merkle path for the transaction `txid` confirmed in the block at `height`.
-    fn transaction_get_merkle(&self, txid: &Txid, height: usize) -> Result<GetMerkleRes, Error>;
+    fn transaction_get_merkle(&self, txid: &MalFixTxid, height: usize) -> Result<GetMerkleRes, Error>;
 
     /// Returns the capabilities of the server.
     fn server_features(&self) -> Result<ServerFeaturesRes, Error>;
