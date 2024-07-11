@@ -198,7 +198,11 @@ pub trait ElectrumApi {
     fn transaction_broadcast_raw(&self, raw_tx: &[u8]) -> Result<MalFixTxid, Error>;
 
     /// Returns the merkle path for the transaction `txid` confirmed in the block at `height`.
-    fn transaction_get_merkle(&self, txid: &MalFixTxid, height: usize) -> Result<GetMerkleRes, Error>;
+    fn transaction_get_merkle(
+        &self,
+        txid: &MalFixTxid,
+        height: usize,
+    ) -> Result<GetMerkleRes, Error>;
 
     /// Returns the capabilities of the server.
     fn server_features(&self) -> Result<ServerFeaturesRes, Error>;

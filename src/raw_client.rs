@@ -1061,7 +1061,11 @@ impl<T: Read + Write> ElectrumApi for RawClient<T> {
         Ok(serde_json::from_value(result)?)
     }
 
-    fn transaction_get_merkle(&self, txid: &MalFixTxid, height: usize) -> Result<GetMerkleRes, Error> {
+    fn transaction_get_merkle(
+        &self,
+        txid: &MalFixTxid,
+        height: usize,
+    ) -> Result<GetMerkleRes, Error> {
         let params = vec![Param::String(format!("{:x}", txid)), Param::Usize(height)];
         let req = Request::new_id(
             self.last_id.fetch_add(1, Ordering::SeqCst),
@@ -1103,9 +1107,9 @@ impl<T: Read + Write> ElectrumApi for RawClient<T> {
 
 #[cfg(test)]
 mod test {
+    use crate::utils;
     use std::str::FromStr;
     use tapyrus::hex::DisplayHex;
-    use crate::utils;
 
     use super::RawClient;
     use api::ElectrumApi;
@@ -1172,10 +1176,10 @@ mod test {
                 254, 159, 8, 157, 185, 232, 254, 137, 11, 255, 184, 33, 101, 132, 159, 82, 186, 94,
                 1, 33, 3, 102, 38, 38, 144, 203, 223, 100, 129, 50, 206, 12, 8, 137, 98, 198, 54,
                 17, 18, 88, 35, 100, 237, 225, 32, 243, 120, 10, 183, 52, 56, 252, 75, 64, 43, 30,
-                217, 153, 105, 32, 245, 122, 66, 95, 111, 151, 151, 85, 124, 14, 115, 208, 201, 251,
-                175, 222, 188, 170, 121, 107, 19, 110, 9, 70, 255, 169, 141, 146, 143, 129, 48, 182,
-                165, 114, 248, 61, 163, 149, 48, 177, 55, 132, 238, 183, 0, 116, 101, 182, 115, 170,
-                149, 9, 22, 25, 231, 238, 32, 133
+                217, 153, 105, 32, 245, 122, 66, 95, 111, 151, 151, 85, 124, 14, 115, 208, 201,
+                251, 175, 222, 188, 170, 121, 107, 19, 110, 9, 70, 255, 169, 141, 146, 143, 129,
+                48, 182, 165, 114, 248, 61, 163, 149, 48, 177, 55, 132, 238, 183, 0, 116, 101, 182,
+                115, 170, 149, 9, 22, 25, 231, 238, 32, 133
             ]
         );
     }
@@ -1226,8 +1230,10 @@ mod test {
         assert!(resp.len() >= 328);
         assert_eq!(
             resp[0].tx_hash,
-            MalFixTxid::from_str("e4801aa4d2ac8912958236e10558dddb1e32a886c6186d7f4146365563f47db1")
-                .unwrap()
+            MalFixTxid::from_str(
+                "e4801aa4d2ac8912958236e10558dddb1e32a886c6186d7f4146365563f47db1"
+            )
+            .unwrap()
         );
     }
 
@@ -1291,8 +1297,10 @@ mod test {
 
         let resp = client
             .transaction_get(
-                &MalFixTxid::from_str("11f03b025e513d434f1ca79f22ca4343af97f2264d9551888a436bca1c0984ba")
-                    .unwrap(),
+                &MalFixTxid::from_str(
+                    "11f03b025e513d434f1ca79f22ca4343af97f2264d9551888a436bca1c0984ba",
+                )
+                .unwrap(),
             )
             .unwrap();
         assert_eq!(resp.version, transaction::Version::ONE);
@@ -1307,8 +1315,10 @@ mod test {
 
         let resp = client
             .transaction_get_raw(
-                &MalFixTxid::from_str("e40ceaf649597e5dc0fb3f55eb052caea0f386fc06854c063dc88a3de8fcc13c")
-                    .unwrap(),
+                &MalFixTxid::from_str(
+                    "e40ceaf649597e5dc0fb3f55eb052caea0f386fc06854c063dc88a3de8fcc13c",
+                )
+                .unwrap(),
             )
             .unwrap();
         assert_eq!(
@@ -1324,9 +1334,10 @@ mod test {
 
         let client = RawClient::new(get_test_server(), None).unwrap();
 
-        let txid =
-            MalFixTxid::from_str("1f7ff3c407f33eabc8bec7d2cc230948f2249ec8e591bcf6f971ca9366c8788d")
-                .unwrap();
+        let txid = MalFixTxid::from_str(
+            "1f7ff3c407f33eabc8bec7d2cc230948f2249ec8e591bcf6f971ca9366c8788d",
+        )
+        .unwrap();
         let resp = client.transaction_get_merkle(&txid, 630000).unwrap();
         assert_eq!(resp.block_height, 630000);
         assert_eq!(resp.pos, 68);

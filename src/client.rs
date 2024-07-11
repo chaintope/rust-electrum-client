@@ -1,7 +1,7 @@
 //! Electrum Client
 
-use std::{borrow::Borrow, sync::RwLock};
 use log::{info, warn};
+use std::{borrow::Borrow, sync::RwLock};
 
 use tapyrus::{MalFixTxid, Script};
 
@@ -323,7 +323,11 @@ impl ElectrumApi for Client {
     }
 
     #[inline]
-    fn transaction_get_merkle(&self, txid: &MalFixTxid, height: usize) -> Result<GetMerkleRes, Error> {
+    fn transaction_get_merkle(
+        &self,
+        txid: &MalFixTxid,
+        height: usize,
+    ) -> Result<GetMerkleRes, Error> {
         impl_inner_call!(self, transaction_get_merkle, txid, height)
     }
 
