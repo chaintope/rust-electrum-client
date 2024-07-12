@@ -31,6 +31,10 @@ jobs:
         run: $HOME/.cargo/bin/rustup default ${{ matrix.rust }}
       - name: Set profile
         run: $HOME/.cargo/bin/rustup set profile minimal
+      - name: Pin dependencies for MSRV
+        if: matrix.rust == '1.63.0'
+        run: |
+          cargo update -p cc --precise "1.0.105"
       - name: Fmt
         run: cargo fmt -- --check --verbose
       - name: "[Pending]Test"
