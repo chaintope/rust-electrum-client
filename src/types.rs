@@ -11,7 +11,7 @@ use tapyrus::blockdata::block;
 use tapyrus::consensus::encode::deserialize;
 use tapyrus::hashes::{sha256, Hash};
 use tapyrus::hex::{DisplayHex, FromHex};
-use tapyrus::{Script, Txid};
+use tapyrus::{MalFixTxid, Script};
 
 use serde::{de, Deserialize, Serialize};
 
@@ -166,7 +166,7 @@ pub struct GetHistoryRes {
     /// its inputs are unconfirmed too.
     pub height: i32,
     /// Txid of the transaction.
-    pub tx_hash: Txid,
+    pub tx_hash: MalFixTxid,
     /// Fee of the transaction.
     pub fee: Option<u64>,
 }
@@ -177,7 +177,7 @@ pub struct ListUnspentRes {
     /// Confirmation height of the transaction that created this output.
     pub height: usize,
     /// Txid of the transaction
-    pub tx_hash: Txid,
+    pub tx_hash: MalFixTxid,
     /// Index of the output in the transaction.
     pub tx_pos: usize,
     /// Value of the output.

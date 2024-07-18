@@ -3,7 +3,7 @@
 use tapyrus::hash_types::TxMerkleNode;
 use tapyrus::hashes::sha256d::Hash as Sha256d;
 use tapyrus::hashes::Hash;
-use tapyrus::Txid;
+use tapyrus::MalFixTxid;
 use types::GetMerkleRes;
 
 /// Verifies a Merkle inclusion proof as retrieved via [`transaction_get_merkle`] for a transaction with the
@@ -15,7 +15,7 @@ use types::GetMerkleRes;
 /// [`transaction_get_merkle`]: crate::ElectrumApi::transaction_get_merkle
 /// [`Header`]: tapyrus::Header
 pub fn validate_merkle_proof(
-    txid: &Txid,
+    txid: &MalFixTxid,
     merkle_root: &TxMerkleNode,
     merkle_res: &GetMerkleRes,
 ) -> bool {
