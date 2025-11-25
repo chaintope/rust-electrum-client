@@ -3,13 +3,13 @@ name = "electrum-client"
 version = "0.24.1"
 authors = ["Alekos Filini <alekos.filini@gmail.com>"]
 license = "MIT"
-homepage = "https://github.com/bitcoindevkit/rust-electrum-client"
-repository = "https://github.com/bitcoindevkit/rust-electrum-client"
+homepage = "https://github.com/chaintope/rust-electrum-client"
+repository = "https://github.com/chaintope/rust-electrum-client"
 documentation = "https://docs.rs/electrum-client/"
 description = "Bitcoin Electrum client library. Supports plaintext, TLS and Onion servers."
 keywords = ["bitcoin", "electrum"]
 readme = "README.md"
-rust-version = "1.75.0"
+rust-version = "1.85.0"
 edition = "2021"
 
 # loosely based on https://github.com/evgeniy-scherbina/rust-electrumx-client
@@ -20,7 +20,7 @@ path = "src/lib.rs"
 
 [dependencies]
 log = "^0.4"
-bitcoin = { version = "0.32", features = ["serde"] }
+tapyrus = { git = "https://github.com/chaintope/rust-tapyrus", branch = "update_on_bitcoin_0.31.x", features = ["serde"]}
 serde = { version = "^1.0", features = ["derive"] }
 serde_json = { version = "^1.0" }
 
