@@ -15,9 +15,9 @@ use std::time::Duration;
 #[allow(unused_imports)]
 use log::{debug, error, info, trace, warn};
 
-use bitcoin::consensus::encode::deserialize;
-use bitcoin::hex::{DisplayHex, FromHex};
-use bitcoin::{Script, Txid};
+use tapyrus::consensus::encode::deserialize;
+use tapyrus::hex::{DisplayHex, FromHex};
+use tapyrus::{Script, Txid};
 
 #[cfg(feature = "use-openssl")]
 use openssl::ssl::{SslConnector, SslMethod, SslStream, SslVerifyMode};
@@ -1265,9 +1265,8 @@ mod test {
         let client = RawClient::new(get_test_server(), None).unwrap();
 
         let resp = client.block_header(0).unwrap();
-        assert_eq!(resp.version, bitcoin::block::Version::ONE);
+        assert_eq!(resp.version, tapyrus::block::Version::ONE);
         assert_eq!(resp.time, 1231006505);
-        assert_eq!(resp.nonce, 0x7c2bac1d);
     }
 
     #[test]
@@ -1306,7 +1305,7 @@ mod test {
 
         // Realistically nobody will ever spend from this address, so we can expect the balance to
         // increase over time
-        let addr = bitcoin::Address::from_str("1CounterpartyXXXXXXXXXXXXXXXUWLpVr")
+        let addr = tapyrus::Address::from_str("1CounterpartyXXXXXXXXXXXXXXXUWLpVr")
             .unwrap()
             .assume_checked();
         let resp = client.script_get_balance(&addr.script_pubkey()).unwrap();
@@ -1317,12 +1316,12 @@ mod test {
     fn test_script_get_history() {
         use std::str::FromStr;
 
-        use bitcoin::Txid;
+        use tapyrus::Txid;
 
         let client = RawClient::new(get_test_server(), None).unwrap();
 
         // Mt.Gox hack address
-        let addr = bitcoin::Address::from_str("1FeexV6bAHb8ybZjqQMjJrcCrHGW9sb6uF")
+        let addr = tapyrus::Address::from_str("1FeexV6bAHb8ybZjqQMjJrcCrHGW9sb6uF")
             .unwrap()
             .assume_checked();
         let resp = client.script_get_history(&addr.script_pubkey()).unwrap();
@@ -1337,13 +1336,13 @@ mod test {
 
     #[test]
     fn test_script_list_unspent() {
-        use bitcoin::Txid;
+        use tapyrus::Txid;
         use std::str::FromStr;
 
         let client = RawClient::new(get_test_server(), None).unwrap();
 
         // Peter todd's sha256 bounty address https://bitcointalk.org/index.php?topic=293382.0
-        let addr = bitcoin::Address::from_str("35Snmmy3uhaer2gTboc81ayCip4m9DT4ko")
+        let addr = tapyrus::Address::from_str("35Snmmy3uhaer2gTboc81ayCip4m9DT4ko")
             .unwrap()
             .assume_checked();
         let resp = client.script_list_unspent(&addr.script_pubkey()).unwrap();
@@ -1365,7 +1364,7 @@ mod test {
         let client = RawClient::new(get_test_server(), None).unwrap();
 
         // Peter todd's sha256 bounty address https://bitcointalk.org/index.php?topic=293382.0
-        let script_1 = bitcoin::Address::from_str("35Snmmy3uhaer2gTboc81ayCip4m9DT4ko")
+        let script_1 = tapyrus::Address::from_str("35Snmmy3uhaer2gTboc81ayCip4m9DT4ko")
             .unwrap()
             .assume_checked()
             .script_pubkey();
@@ -1389,7 +1388,7 @@ mod test {
 
     #[test]
     fn test_transaction_get() {
-        use bitcoin::{transaction, Txid};
+        use tapyrus::{transaction, Txid};
 
         let client = RawClient::new(get_test_server(), None).unwrap();
 
@@ -1405,7 +1404,7 @@ mod test {
 
     #[test]
     fn test_transaction_get_raw() {
-        use bitcoin::Txid;
+        use tapyrus::Txid;
 
         let client = RawClient::new(get_test_server(), None).unwrap();
 
@@ -1439,7 +1438,7 @@ mod test {
 
     #[test]
     fn test_transaction_get_merkle() {
-        use bitcoin::Txid;
+        use tapyrus::Txid;
 
         let client = RawClient::new(get_test_server(), None).unwrap();
 
@@ -1484,7 +1483,7 @@ mod test {
 
     #[test]
     fn test_batch_transaction_get_merkle() {
-        use bitcoin::Txid;
+        use tapyrus::Txid;
 
         struct TestCase {
             txid: Txid,
@@ -1576,7 +1575,7 @@ mod test {
 
     #[test]
     fn test_txid_from_pos() {
-        use bitcoin::Txid;
+        use tapyrus::Txid;
 
         let client = RawClient::new(get_test_server(), None).unwrap();
 
@@ -1589,7 +1588,7 @@ mod test {
 
     #[test]
     fn test_txid_from_pos_with_merkle() {
-        use bitcoin::Txid;
+        use tapyrus::Txid;
 
         let client = RawClient::new(get_test_server(), None).unwrap();
 
@@ -1628,7 +1627,7 @@ mod test {
         let client = RawClient::new(get_test_server(), None).unwrap();
 
         // Mt.Gox hack address
-        let addr = bitcoin::Address::from_str("1FeexV6bAHb8ybZjqQMjJrcCrHGW9sb6uF")
+        let addr = tapyrus::Address::from_str("1FeexV6bAHb8ybZjqQMjJrcCrHGW9sb6uF")
             .unwrap()
             .assume_checked();
 

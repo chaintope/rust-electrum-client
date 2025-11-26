@@ -7,11 +7,11 @@ use std::fmt::{self, Display, Formatter};
 use std::ops::Deref;
 use std::sync::Arc;
 
-use bitcoin::blockdata::block;
-use bitcoin::consensus::encode::deserialize;
-use bitcoin::hashes::{sha256, Hash};
-use bitcoin::hex::{DisplayHex, FromHex};
-use bitcoin::{Script, Txid};
+use tapyrus::blockdata::block;
+use tapyrus::consensus::encode::deserialize;
+use tapyrus::hashes::{sha256, Hash};
+use tapyrus::hex::{DisplayHex, FromHex};
+use tapyrus::{Script, Txid};
 
 use serde::{de, Deserialize, Serialize};
 
@@ -298,12 +298,12 @@ pub enum Error {
     IOError(std::io::Error),
     /// Wraps `serde_json::error::Error`
     JSON(serde_json::error::Error),
-    /// Wraps `bitcoin::hex::HexToBytesError`
-    Hex(bitcoin::hex::HexToBytesError),
+    /// Wraps `tapyrus::hex::HexToBytesError`
+    Hex(tapyrus::hex::HexToBytesError),
     /// Error returned by the Electrum server
     Protocol(serde_json::Value),
     /// Error during the deserialization of a Bitcoin data structure
-    Bitcoin(bitcoin::consensus::encode::Error),
+    Bitcoin(tapyrus::consensus::encode::Error),
     /// Already subscribed to the notifications of an address
     AlreadySubscribed(ScriptHash),
     /// Not subscribed to the notifications of an address
@@ -394,8 +394,8 @@ macro_rules! impl_error {
 
 impl_error!(std::io::Error, IOError);
 impl_error!(serde_json::Error, JSON);
-impl_error!(bitcoin::hex::HexToBytesError, Hex);
-impl_error!(bitcoin::consensus::encode::Error, Bitcoin);
+impl_error!(tapyrus::hex::HexToBytesError, Hex);
+impl_error!(tapyrus::consensus::encode::Error, Bitcoin);
 
 impl<T> From<std::sync::PoisonError<T>> for Error {
     fn from(_: std::sync::PoisonError<T>) -> Self {

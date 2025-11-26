@@ -4,8 +4,8 @@ use std::borrow::Borrow;
 use std::convert::TryInto;
 use std::ops::Deref;
 
-use bitcoin::consensus::encode::{deserialize, serialize};
-use bitcoin::{block, Script, Transaction, Txid};
+use tapyrus::consensus::encode::{deserialize, serialize};
+use tapyrus::{block, Script, Transaction, Txid};
 
 use crate::batch::Batch;
 use crate::types::*;
@@ -459,7 +459,7 @@ mod test {
 
         fn script_subscribe(
             &self,
-            _: &bitcoin::Script,
+            _: &tapyrus::Script,
         ) -> Result<Option<super::ScriptStatus>, super::Error> {
             unreachable!()
         }
@@ -470,25 +470,25 @@ mod test {
         ) -> Result<Vec<Option<super::ScriptStatus>>, super::Error>
         where
             I: IntoIterator + Clone,
-            I::Item: std::borrow::Borrow<&'s bitcoin::Script>,
+            I::Item: std::borrow::Borrow<&'s tapyrus::Script>,
         {
             unreachable!()
         }
 
-        fn script_unsubscribe(&self, _: &bitcoin::Script) -> Result<bool, super::Error> {
+        fn script_unsubscribe(&self, _: &tapyrus::Script) -> Result<bool, super::Error> {
             unreachable!()
         }
 
         fn script_pop(
             &self,
-            _: &bitcoin::Script,
+            _: &tapyrus::Script,
         ) -> Result<Option<super::ScriptStatus>, super::Error> {
             unreachable!()
         }
 
         fn script_get_balance(
             &self,
-            _: &bitcoin::Script,
+            _: &tapyrus::Script,
         ) -> Result<super::GetBalanceRes, super::Error> {
             unreachable!()
         }
@@ -499,14 +499,14 @@ mod test {
         ) -> Result<Vec<super::GetBalanceRes>, super::Error>
         where
             I: IntoIterator + Clone,
-            I::Item: std::borrow::Borrow<&'s bitcoin::Script>,
+            I::Item: std::borrow::Borrow<&'s tapyrus::Script>,
         {
             unreachable!()
         }
 
         fn script_get_history(
             &self,
-            _: &bitcoin::Script,
+            _: &tapyrus::Script,
         ) -> Result<Vec<super::GetHistoryRes>, super::Error> {
             unreachable!()
         }
@@ -517,14 +517,14 @@ mod test {
         ) -> Result<Vec<Vec<super::GetHistoryRes>>, super::Error>
         where
             I: IntoIterator + Clone,
-            I::Item: std::borrow::Borrow<&'s bitcoin::Script>,
+            I::Item: std::borrow::Borrow<&'s tapyrus::Script>,
         {
             unreachable!()
         }
 
         fn script_list_unspent(
             &self,
-            _: &bitcoin::Script,
+            _: &tapyrus::Script,
         ) -> Result<Vec<super::ListUnspentRes>, super::Error> {
             unreachable!()
         }
@@ -535,19 +535,19 @@ mod test {
         ) -> Result<Vec<Vec<super::ListUnspentRes>>, super::Error>
         where
             I: IntoIterator + Clone,
-            I::Item: std::borrow::Borrow<&'s bitcoin::Script>,
+            I::Item: std::borrow::Borrow<&'s tapyrus::Script>,
         {
             unreachable!()
         }
 
-        fn transaction_get_raw(&self, _: &bitcoin::Txid) -> Result<Vec<u8>, super::Error> {
+        fn transaction_get_raw(&self, _: &tapyrus::Txid) -> Result<Vec<u8>, super::Error> {
             unreachable!()
         }
 
         fn batch_transaction_get_raw<'t, I>(&self, _: I) -> Result<Vec<Vec<u8>>, super::Error>
         where
             I: IntoIterator + Clone,
-            I::Item: std::borrow::Borrow<&'t bitcoin::Txid>,
+            I::Item: std::borrow::Borrow<&'t tapyrus::Txid>,
         {
             unreachable!()
         }
@@ -568,13 +568,13 @@ mod test {
             unreachable!()
         }
 
-        fn transaction_broadcast_raw(&self, _: &[u8]) -> Result<bitcoin::Txid, super::Error> {
+        fn transaction_broadcast_raw(&self, _: &[u8]) -> Result<tapyrus::Txid, super::Error> {
             unreachable!()
         }
 
         fn transaction_get_merkle(
             &self,
-            _: &bitcoin::Txid,
+            _: &tapyrus::Txid,
             _: usize,
         ) -> Result<super::GetMerkleRes, super::Error> {
             unreachable!()
@@ -586,12 +586,12 @@ mod test {
         ) -> Result<Vec<crate::GetMerkleRes>, crate::Error>
         where
             I: IntoIterator + Clone,
-            I::Item: std::borrow::Borrow<(bitcoin::Txid, usize)>,
+            I::Item: std::borrow::Borrow<(tapyrus::Txid, usize)>,
         {
             unreachable!()
         }
 
-        fn txid_from_pos(&self, _: usize, _: usize) -> Result<bitcoin::Txid, super::Error> {
+        fn txid_from_pos(&self, _: usize, _: usize) -> Result<tapyrus::Txid, super::Error> {
             unreachable!()
         }
 

@@ -19,7 +19,7 @@
 //! # Ok::<(), electrum_client::Error>(())
 //! ```
 
-pub extern crate bitcoin;
+pub extern crate tapyrus;
 extern crate core;
 extern crate log;
 #[cfg(feature = "use-openssl")]

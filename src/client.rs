@@ -4,7 +4,7 @@ use std::{borrow::Borrow, sync::RwLock};
 
 use log::{info, warn};
 
-use bitcoin::{Script, Txid};
+use tapyrus::{Script, Txid};
 
 use crate::api::ElectrumApi;
 use crate::batch::Batch;
