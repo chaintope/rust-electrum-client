@@ -4,7 +4,7 @@ use std::{borrow::Borrow, sync::RwLock};
 
 use log::{info, warn};
 
-use tapyrus::{Script, Txid};
+use tapyrus::{Script, MalFixTxid};
 
 use crate::api::ElectrumApi;
 use crate::batch::Batch;
@@ -286,7 +286,7 @@ impl ElectrumApi for Client {
     }
 
     #[inline]
-    fn transaction_get_raw(&self, txid: &Txid) -> Result<Vec<u8>, Error> {
+    fn transaction_get_raw(&self, txid: &MalFixTxid) -> Result<Vec<u8>, Error> {
         impl_inner_call!(self, transaction_get_raw, txid)
     }
 
@@ -294,7 +294,7 @@ impl ElectrumApi for Client {
     fn batch_transaction_get_raw<'t, I>(&self, txids: I) -> Result<Vec<Vec<u8>>, Error>
     where
         I: IntoIterator + Clone,
-        I::Item: Borrow<&'t Txid>,
+        I::Item: Borrow<&'t MalFixTxid>,
     {
         impl_inner_call!(self, batch_transaction_get_raw, txids.clone())
     }
@@ -318,12 +318,12 @@ impl ElectrumApi for Client {
     }
 
     #[inline]
-    fn transaction_broadcast_raw(&self, raw_tx: &[u8]) -> Result<Txid, Error> {
+    fn transaction_broadcast_raw(&self, raw_tx: &[u8]) -> Result<MalFixTxid, Error> {
         impl_inner_call!(self, transaction_broadcast_raw, raw_tx)
     }
 
     #[inline]
-    fn transaction_get_merkle(&self, txid: &Txid, height: usize) -> Result<GetMerkleRes, Error> {
+    fn transaction_get_merkle(&self, txid: &MalFixTxid, height: usize) -> Result<GetMerkleRes, Error> {
         impl_inner_call!(self, transaction_get_merkle, txid, height)
     }
 
@@ -334,7 +334,7 @@ impl ElectrumApi for Client {
     ) -> Result<Vec<GetMerkleRes>, Error>
     where
         I: IntoIterator + Clone,
-        I::Item: Borrow<(Txid, usize)>,
+        I::Item: Borrow<(MalFixTxid, usize)>,
     {
         impl_inner_call!(
             self,
@@ -344,7 +344,7 @@ impl ElectrumApi for Client {
     }
 
     #[inline]
-    fn txid_from_pos(&self, height: usize, tx_pos: usize) -> Result<Txid, Error> {
+    fn txid_from_pos(&self, height: usize, tx_pos: usize) -> Result<MalFixTxid, Error> {
         impl_inner_call!(self, txid_from_pos, height, tx_pos)
     }
 

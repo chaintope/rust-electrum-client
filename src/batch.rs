@@ -2,7 +2,7 @@
 //!
 //! This module contains definitions and helper functions used when making batch calls.
 
-use tapyrus::{Script, Txid};
+use tapyrus::{Script, MalFixTxid};
 
 use crate::types::{Call, Param, ToElectrumScriptHash};
 
@@ -56,14 +56,14 @@ impl Batch {
     }
 
     /// Add one `blockchain.transaction.get` request to the batch queue
-    pub fn transaction_get(&mut self, tx_hash: &Txid) {
+    pub fn transaction_get(&mut self, tx_hash: &MalFixTxid) {
         let params = vec![Param::String(format!("{:x}", tx_hash))];
         self.calls
             .push((String::from("blockchain.transaction.get"), params));
     }
 
     /// Add one `blockchain.transaction.get_merkle` request to the batch queue
-    pub fn transaction_get_merkle(&mut self, tx_hash_and_height: &(Txid, usize)) {
+    pub fn transaction_get_merkle(&mut self, tx_hash_and_height: &(MalFixTxid, usize)) {
         let (tx_hash, height) = tx_hash_and_height;
         let params = vec![
             Param::String(format!("{:x}", tx_hash)),

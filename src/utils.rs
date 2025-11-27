@@ -4,7 +4,7 @@ use crate::types::GetMerkleRes;
 use tapyrus::hash_types::TxMerkleNode;
 use tapyrus::hashes::sha256d::Hash as Sha256d;
 use tapyrus::hashes::{Hash, HashEngine};
-use tapyrus::Txid;
+use tapyrus::MalFixTxid;
 
 /// Verifies a Merkle inclusion proof as retrieved via [`transaction_get_merkle`] for a transaction with the
 /// given `txid` and `merkle_root` as included in the [`BlockHeader`].
@@ -15,7 +15,7 @@ use tapyrus::Txid;
 /// [`transaction_get_merkle`]: crate::ElectrumApi::transaction_get_merkle
 /// [`BlockHeader`]: tapyrus::BlockHeader
 pub fn validate_merkle_proof(
-    txid: &Txid,
+    txid: &MalFixTxid,
     merkle_root: &TxMerkleNode,
     merkle_res: &GetMerkleRes,
 ) -> bool {

@@ -5,7 +5,7 @@ use std::convert::TryInto;
 use std::ops::Deref;
 
 use tapyrus::consensus::encode::{deserialize, serialize};
-use tapyrus::{block, Script, Transaction, Txid};
+use tapyrus::{block, Script, Transaction, MalFixTxid};
 
 use crate::batch::Batch;
 use crate::types::*;
@@ -109,14 +109,14 @@ where
         (**self).batch_script_list_unspent(scripts)
     }
 
-    fn transaction_get_raw(&self, txid: &Txid) -> Result<Vec<u8>, Error> {
+    fn transaction_get_raw(&self, txid: &MalFixTxid) -> Result<Vec<u8>, Error> {
         (**self).transaction_get_raw(txid)
     }
 
     fn batch_transaction_get_raw<'t, I>(&self, txids: I) -> Result<Vec<Vec<u8>>, Error>
     where
         I: IntoIterator + Clone,
-        I::Item: Borrow<&'t Txid>,
+        I::Item: Borrow<&'t MalFixTxid>,
     {
         (**self).batch_transaction_get_raw(txids)
     }
@@ -137,11 +137,11 @@ where
         (**self).batch_estimate_fee(numbers)
     }
 
-    fn transaction_broadcast_raw(&self, raw_tx: &[u8]) -> Result<Txid, Error> {
+    fn transaction_broadcast_raw(&self, raw_tx: &[u8]) -> Result<MalFixTxid, Error> {
         (**self).transaction_broadcast_raw(raw_tx)
     }
 
-    fn transaction_get_merkle(&self, txid: &Txid, height: usize) -> Result<GetMerkleRes, Error> {
+    fn transaction_get_merkle(&self, txid: &MalFixTxid, height: usize) -> Result<GetMerkleRes, Error> {
         (**self).transaction_get_merkle(txid, height)
     }
 
@@ -151,12 +151,12 @@ where
     ) -> Result<Vec<GetMerkleRes>, Error>
     where
         I: IntoIterator + Clone,
-        I::Item: Borrow<(Txid, usize)>,
+        I::Item: Borrow<(MalFixTxid, usize)>,
     {
         (**self).batch_transaction_get_merkle(txids_and_heights)
     }
 
-    fn txid_from_pos(&self, height: usize, tx_pos: usize) -> Result<Txid, Error> {
+    fn txid_from_pos(&self, height: usize, tx_pos: usize) -> Result<MalFixTxid, Error> {
         (**self).txid_from_pos(height, tx_pos)
     }
 
@@ -203,7 +203,7 @@ pub trait ElectrumApi {
     }
 
     /// Gets the transaction with `txid`. Returns an error if not found.
-    fn transaction_get(&self, txid: &Txid) -> Result<Transaction, Error> {
+    fn transaction_get(&self, txid: &MalFixTxid) -> Result<Transaction, Error> {
         Ok(deserialize(&self.transaction_get_raw(txid)?)?)
     }
 
@@ -213,7 +213,7 @@ pub trait ElectrumApi {
     fn batch_transaction_get<'t, I>(&self, txids: I) -> Result<Vec<Transaction>, Error>
     where
         I: IntoIterator + Clone,
-        I::Item: Borrow<&'t Txid>,
+        I::Item: Borrow<&'t MalFixTxid>,
     {
         self.batch_transaction_get_raw(txids)?
             .iter()
@@ -236,7 +236,7 @@ pub trait ElectrumApi {
     }
 
     /// Broadcasts a transaction to the network.
-    fn transaction_broadcast(&self, tx: &Transaction) -> Result<Txid, Error> {
+    fn transaction_broadcast(&self, tx: &Transaction) -> Result<MalFixTxid, Error> {
         let buffer: Vec<u8> = serialize(tx);
         self.transaction_broadcast_raw(&buffer)
     }
@@ -340,7 +340,7 @@ pub trait ElectrumApi {
         I::Item: Borrow<&'s Script>;
 
     /// Gets the raw bytes of a transaction with `txid`. Returns an error if not found.
-    fn transaction_get_raw(&self, txid: &Txid) -> Result<Vec<u8>, Error>;
+    fn transaction_get_raw(&self, txid: &MalFixTxid) -> Result<Vec<u8>, Error>;
 
     /// Batch version of [`transaction_get_raw`](#method.transaction_get_raw).
     ///
@@ -348,7 +348,7 @@ pub trait ElectrumApi {
     fn batch_transaction_get_raw<'t, I>(&self, txids: I) -> Result<Vec<Vec<u8>>, Error>
     where
         I: IntoIterator + Clone,
-        I::Item: Borrow<&'t Txid>;
+        I::Item: Borrow<&'t MalFixTxid>;
 
     /// Batch version of [`block_header_raw`](#method.block_header_raw).
     ///
@@ -368,10 +368,10 @@ pub trait ElectrumApi {
         I::Item: Borrow<usize>;
 
     /// Broadcasts the raw bytes of a transaction to the network.
-    fn transaction_broadcast_raw(&self, raw_tx: &[u8]) -> Result<Txid, Error>;
+    fn transaction_broadcast_raw(&self, raw_tx: &[u8]) -> Result<MalFixTxid, Error>;
 
     /// Returns the merkle path for the transaction `txid` confirmed in the block at `height`.
-    fn transaction_get_merkle(&self, txid: &Txid, height: usize) -> Result<GetMerkleRes, Error>;
+    fn transaction_get_merkle(&self, txid: &MalFixTxid, height: usize) -> Result<GetMerkleRes, Error>;
 
     /// Batch version of [`transaction_get_merkle`](#method.transaction_get_merkle).
     ///
@@ -382,10 +382,10 @@ pub trait ElectrumApi {
     ) -> Result<Vec<GetMerkleRes>, Error>
     where
         I: IntoIterator + Clone,
-        I::Item: Borrow<(Txid, usize)>;
+        I::Item: Borrow<(MalFixTxid, usize)>;
 
     /// Returns a transaction hash, given a block `height` and a `tx_pos` in the block.
-    fn txid_from_pos(&self, height: usize, tx_pos: usize) -> Result<Txid, Error>;
+    fn txid_from_pos(&self, height: usize, tx_pos: usize) -> Result<MalFixTxid, Error>;
 
     /// Returns a transaction hash and a merkle path, given a block `height` and a `tx_pos` in the
     /// block.
@@ -540,14 +540,14 @@ mod test {
             unreachable!()
         }
 
-        fn transaction_get_raw(&self, _: &tapyrus::Txid) -> Result<Vec<u8>, super::Error> {
+        fn transaction_get_raw(&self, _: &tapyrus::MalFixTxid) -> Result<Vec<u8>, super::Error> {
             unreachable!()
         }
 
         fn batch_transaction_get_raw<'t, I>(&self, _: I) -> Result<Vec<Vec<u8>>, super::Error>
         where
             I: IntoIterator + Clone,
-            I::Item: std::borrow::Borrow<&'t tapyrus::Txid>,
+            I::Item: std::borrow::Borrow<&'t tapyrus::MalFixTxid>,
         {
             unreachable!()
         }
@@ -568,13 +568,13 @@ mod test {
             unreachable!()
         }
 
-        fn transaction_broadcast_raw(&self, _: &[u8]) -> Result<tapyrus::Txid, super::Error> {
+        fn transaction_broadcast_raw(&self, _: &[u8]) -> Result<tapyrus::MalFixTxid, super::Error> {
             unreachable!()
         }
 
         fn transaction_get_merkle(
             &self,
-            _: &tapyrus::Txid,
+            _: &tapyrus::MalFixTxid,
             _: usize,
         ) -> Result<super::GetMerkleRes, super::Error> {
             unreachable!()
@@ -586,12 +586,12 @@ mod test {
         ) -> Result<Vec<crate::GetMerkleRes>, crate::Error>
         where
             I: IntoIterator + Clone,
-            I::Item: std::borrow::Borrow<(tapyrus::Txid, usize)>,
+            I::Item: std::borrow::Borrow<(tapyrus::MalFixTxid, usize)>,
         {
             unreachable!()
         }
 
-        fn txid_from_pos(&self, _: usize, _: usize) -> Result<tapyrus::Txid, super::Error> {
+        fn txid_from_pos(&self, _: usize, _: usize) -> Result<tapyrus::MalFixTxid, super::Error> {
             unreachable!()
         }
 

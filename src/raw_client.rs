@@ -17,7 +17,7 @@ use log::{debug, error, info, trace, warn};
 
 use tapyrus::consensus::encode::deserialize;
 use tapyrus::hex::{DisplayHex, FromHex};
-use tapyrus::{Script, Txid};
+use tapyrus::{Script, MalFixTxid};
 
 #[cfg(feature = "use-openssl")]
 use openssl::ssl::{SslConnector, SslMethod, SslStream, SslVerifyMode};
@@ -1052,7 +1052,7 @@ impl<T: Read + Write> ElectrumApi for RawClient<T> {
         impl_batch_call!(self, scripts, script_list_unspent)
     }
 
-    fn transaction_get_raw(&self, txid: &Txid) -> Result<Vec<u8>, Error> {
+    fn transaction_get_raw(&self, txid: &MalFixTxid) -> Result<Vec<u8>, Error> {
         let params = vec![Param::String(format!("{:x}", txid))];
         let req = Request::new_id(
             self.last_id.fetch_add(1, Ordering::SeqCst),
@@ -1071,7 +1071,7 @@ impl<T: Read + Write> ElectrumApi for RawClient<T> {
     fn batch_transaction_get_raw<'t, I>(&self, txids: I) -> Result<Vec<Vec<u8>>, Error>
     where
         I: IntoIterator + Clone,
-        I::Item: Borrow<&'t Txid>,
+        I::Item: Borrow<&'t MalFixTxid>,
     {
         let txs_string: Result<Vec<String>, Error> = impl_batch_call!(self, txids, transaction_get);
         txs_string?
@@ -1101,7 +1101,7 @@ impl<T: Read + Write> ElectrumApi for RawClient<T> {
         impl_batch_call!(self, numbers, estimate_fee, apply_deref)
     }
 
-    fn transaction_broadcast_raw(&self, raw_tx: &[u8]) -> Result<Txid, Error> {
+    fn transaction_broadcast_raw(&self, raw_tx: &[u8]) -> Result<MalFixTxid, Error> {
         let params = vec![Param::String(raw_tx.to_lower_hex_string())];
         let req = Request::new_id(
             self.last_id.fetch_add(1, Ordering::SeqCst),
@@ -1113,7 +1113,7 @@ impl<T: Read + Write> ElectrumApi for RawClient<T> {
         Ok(serde_json::from_value(result)?)
     }
 
-    fn transaction_get_merkle(&self, txid: &Txid, height: usize) -> Result<GetMerkleRes, Error> {
+    fn transaction_get_merkle(&self, txid: &MalFixTxid, height: usize) -> Result<GetMerkleRes, Error> {
         let params = vec![Param::String(format!("{:x}", txid)), Param::Usize(height)];
         let req = Request::new_id(
             self.last_id.fetch_add(1, Ordering::SeqCst),
@@ -1131,12 +1131,12 @@ impl<T: Read + Write> ElectrumApi for RawClient<T> {
     ) -> Result<Vec<GetMerkleRes>, Error>
     where
         I: IntoIterator + Clone,
-        I::Item: Borrow<(Txid, usize)>,
+        I::Item: Borrow<(MalFixTxid, usize)>,
     {
         impl_batch_call!(self, txids_and_heights, transaction_get_merkle)
     }
 
-    fn txid_from_pos(&self, height: usize, tx_pos: usize) -> Result<Txid, Error> {
+    fn txid_from_pos(&self, height: usize, tx_pos: usize) -> Result<MalFixTxid, Error> {
         let params = vec![Param::Usize(height), Param::Usize(tx_pos)];
         let req = Request::new_id(
             self.last_id.fetch_add(1, Ordering::SeqCst),
@@ -1324,7 +1324,7 @@ mod test {
     fn test_script_get_history() {
         use std::str::FromStr;
 
-        use tapyrus::Txid;
+        use tapyrus::MalFixTxid;
 
         let client = RawClient::new(get_test_server(), None).unwrap();
 
@@ -1337,7 +1337,7 @@ mod test {
         assert!(resp.len() >= 328);
         assert_eq!(
             resp[0].tx_hash,
-            Txid::from_str("e67a0550848b7932d7796aeea16ab0e48a5cfe81c4e8cca2c5b03e0416850114")
+            MalFixTxid::from_str("e67a0550848b7932d7796aeea16ab0e48a5cfe81c4e8cca2c5b03e0416850114")
                 .unwrap()
         );
     }
@@ -1345,7 +1345,7 @@ mod test {
     #[test]
     #[ignore = "Requires Bitcoin Electrum server"]
     fn test_script_list_unspent() {
-        use tapyrus::Txid;
+        use tapyrus::MalFixTxid;
         use std::str::FromStr;
 
         let client = RawClient::new(get_test_server(), None).unwrap();
@@ -1358,7 +1358,7 @@ mod test {
 
         assert!(resp.len() >= 9);
         let txid = "397f12ee15f8a3d2ab25c0f6bb7d3c64d2038ca056af10dd8251b98ae0f076b0";
-        let txid = Txid::from_str(txid).unwrap();
+        let txid = MalFixTxid::from_str(txid).unwrap();
         let txs: Vec<_> = resp.iter().filter(|e| e.tx_hash == txid).collect();
         assert_eq!(txs.len(), 1);
         assert_eq!(txs[0].value, 10000000);
@@ -1400,13 +1400,13 @@ mod test {
     #[test]
     #[ignore = "Requires Bitcoin Electrum server"]
     fn test_transaction_get() {
-        use tapyrus::{transaction, Txid};
+        use tapyrus::{transaction, MalFixTxid};
 
         let client = RawClient::new(get_test_server(), None).unwrap();
 
         let resp = client
             .transaction_get(
-                &Txid::from_str("cc2ca076fd04c2aeed6d02151c447ced3d09be6fb4d4ef36cb5ed4e7a3260566")
+                &MalFixTxid::from_str("cc2ca076fd04c2aeed6d02151c447ced3d09be6fb4d4ef36cb5ed4e7a3260566")
                     .unwrap(),
             )
             .unwrap();
@@ -1417,13 +1417,13 @@ mod test {
     #[test]
     #[ignore = "Requires Bitcoin Electrum server"]
     fn test_transaction_get_raw() {
-        use tapyrus::Txid;
+        use tapyrus::MalFixTxid;
 
         let client = RawClient::new(get_test_server(), None).unwrap();
 
         let resp = client
             .transaction_get_raw(
-                &Txid::from_str("cc2ca076fd04c2aeed6d02151c447ced3d09be6fb4d4ef36cb5ed4e7a3260566")
+                &MalFixTxid::from_str("cc2ca076fd04c2aeed6d02151c447ced3d09be6fb4d4ef36cb5ed4e7a3260566")
                     .unwrap(),
             )
             .unwrap();
@@ -1452,12 +1452,12 @@ mod test {
     #[test]
     #[ignore = "Requires Bitcoin Electrum server"]
     fn test_transaction_get_merkle() {
-        use tapyrus::Txid;
+        use tapyrus::MalFixTxid;
 
         let client = RawClient::new(get_test_server(), None).unwrap();
 
         let txid =
-            Txid::from_str("1f7ff3c407f33eabc8bec7d2cc230948f2249ec8e591bcf6f971ca9366c8788d")
+            MalFixTxid::from_str("1f7ff3c407f33eabc8bec7d2cc230948f2249ec8e591bcf6f971ca9366c8788d")
                 .unwrap();
         let resp = client.transaction_get_merkle(&txid, 630000).unwrap();
         assert_eq!(resp.block_height, 630000);
@@ -1498,10 +1498,10 @@ mod test {
     #[test]
     #[ignore = "Requires Bitcoin Electrum server"]
     fn test_batch_transaction_get_merkle() {
-        use tapyrus::Txid;
+        use tapyrus::MalFixTxid;
 
         struct TestCase {
-            txid: Txid,
+            txid: MalFixTxid,
             block_height: usize,
             exp_pos: usize,
             exp_bytes: [u8; 32],
@@ -1511,7 +1511,7 @@ mod test {
 
         let test_cases: Vec<TestCase> = vec![
             TestCase {
-                txid: Txid::from_str(
+                txid: MalFixTxid::from_str(
                     "1f7ff3c407f33eabc8bec7d2cc230948f2249ec8e591bcf6f971ca9366c8788d",
                 )
                 .unwrap(),
@@ -1523,7 +1523,7 @@ mod test {
                 ],
             },
             TestCase {
-                txid: Txid::from_str(
+                txid: MalFixTxid::from_str(
                     "70a8639bc9b743c0610d1231103a2f8e99f4a25670946b91f16c55a5373b37d1",
                 )
                 .unwrap(),
@@ -1535,7 +1535,7 @@ mod test {
                 ],
             },
             TestCase {
-                txid: Txid::from_str(
+                txid: MalFixTxid::from_str(
                     "a0db149ace545beabbd87a8d6b20ffd6aa3b5a50e58add49a3d435f898c272cf",
                 )
                 .unwrap(),
@@ -1548,7 +1548,7 @@ mod test {
             },
         ];
 
-        let txids_and_heights: Vec<(Txid, usize)> = test_cases
+        let txids_and_heights: Vec<(MalFixTxid, usize)> = test_cases
             .iter()
             .map(|case| (case.txid, case.block_height))
             .collect();
@@ -1591,12 +1591,12 @@ mod test {
     #[test]
     #[ignore = "Requires Bitcoin Electrum server"]
     fn test_txid_from_pos() {
-        use tapyrus::Txid;
+        use tapyrus::MalFixTxid;
 
         let client = RawClient::new(get_test_server(), None).unwrap();
 
         let txid =
-            Txid::from_str("1f7ff3c407f33eabc8bec7d2cc230948f2249ec8e591bcf6f971ca9366c8788d")
+            MalFixTxid::from_str("1f7ff3c407f33eabc8bec7d2cc230948f2249ec8e591bcf6f971ca9366c8788d")
                 .unwrap();
         let resp = client.txid_from_pos(630000, 68).unwrap();
         assert_eq!(resp, txid);
@@ -1605,12 +1605,12 @@ mod test {
     #[test]
     #[ignore = "Requires Bitcoin Electrum server"]
     fn test_txid_from_pos_with_merkle() {
-        use tapyrus::Txid;
+        use tapyrus::MalFixTxid;
 
         let client = RawClient::new(get_test_server(), None).unwrap();
 
         let txid =
-            Txid::from_str("1f7ff3c407f33eabc8bec7d2cc230948f2249ec8e591bcf6f971ca9366c8788d")
+            MalFixTxid::from_str("1f7ff3c407f33eabc8bec7d2cc230948f2249ec8e591bcf6f971ca9366c8788d")
                 .unwrap();
         let resp = client.txid_from_pos_with_merkle(630000, 68).unwrap();
         assert_eq!(resp.tx_hash, txid);
