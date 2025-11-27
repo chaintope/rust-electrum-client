@@ -37,6 +37,13 @@ libc = { version = "0.2", optional = true }
 [target.'cfg(windows)'.dependencies]
 winapi = { version="0.3.9", features=["winsock2"], optional = true }
 
+[dev-dependencies]
+tdk_testenv = { path = "../tdk/crates/testenv" }
+anyhow = "1.0"
+# Pin versions for Rust 1.84 compatibility
+home = "=0.5.5"
+base64ct = "=1.6"
+
 [features]
 default = ["proxy", "use-rustls"]
 minimal = []

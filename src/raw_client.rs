@@ -1210,6 +1210,7 @@ mod test {
     }
 
     #[test]
+    #[ignore = "Requires Bitcoin Electrum server"]
     fn test_server_features_simple() {
         let client = RawClient::new(get_test_server(), None).unwrap();
 
@@ -1245,6 +1246,7 @@ mod test {
     }
 
     #[test]
+    #[ignore = "Requires Bitcoin Electrum server"]
     fn test_relay_fee() {
         let client = RawClient::new(get_test_server(), None).unwrap();
 
@@ -1253,6 +1255,7 @@ mod test {
     }
 
     #[test]
+    #[ignore = "Requires Bitcoin Electrum server"]
     fn test_estimate_fee() {
         let client = RawClient::new(get_test_server(), None).unwrap();
 
@@ -1261,6 +1264,7 @@ mod test {
     }
 
     #[test]
+    #[ignore = "Requires Bitcoin Electrum server"]
     fn test_block_header() {
         let client = RawClient::new(get_test_server(), None).unwrap();
 
@@ -1270,6 +1274,7 @@ mod test {
     }
 
     #[test]
+    #[ignore = "Requires Bitcoin Electrum server"]
     fn test_block_header_raw() {
         let client = RawClient::new(get_test_server(), None).unwrap();
 
@@ -1286,6 +1291,7 @@ mod test {
     }
 
     #[test]
+    #[ignore = "Requires Bitcoin Electrum server"]
     fn test_block_headers() {
         let client = RawClient::new(get_test_server(), None).unwrap();
 
@@ -1298,6 +1304,7 @@ mod test {
     }
 
     #[test]
+    #[ignore = "Requires Bitcoin Electrum server"]
     fn test_script_get_balance() {
         use std::str::FromStr;
 
@@ -1313,6 +1320,7 @@ mod test {
     }
 
     #[test]
+    #[ignore = "Requires Bitcoin Electrum server"]
     fn test_script_get_history() {
         use std::str::FromStr;
 
@@ -1335,6 +1343,7 @@ mod test {
     }
 
     #[test]
+    #[ignore = "Requires Bitcoin Electrum server"]
     fn test_script_list_unspent() {
         use tapyrus::Txid;
         use std::str::FromStr;
@@ -1358,6 +1367,7 @@ mod test {
     }
 
     #[test]
+    #[ignore = "Requires Bitcoin Electrum server"]
     fn test_batch_script_list_unspent() {
         use std::str::FromStr;
 
@@ -1377,6 +1387,7 @@ mod test {
     }
 
     #[test]
+    #[ignore = "Requires Bitcoin Electrum server"]
     fn test_batch_estimate_fee() {
         let client = RawClient::new(get_test_server(), None).unwrap();
 
@@ -1387,6 +1398,7 @@ mod test {
     }
 
     #[test]
+    #[ignore = "Requires Bitcoin Electrum server"]
     fn test_transaction_get() {
         use tapyrus::{transaction, Txid};
 
@@ -1403,6 +1415,7 @@ mod test {
     }
 
     #[test]
+    #[ignore = "Requires Bitcoin Electrum server"]
     fn test_transaction_get_raw() {
         use tapyrus::Txid;
 
@@ -1437,6 +1450,7 @@ mod test {
     }
 
     #[test]
+    #[ignore = "Requires Bitcoin Electrum server"]
     fn test_transaction_get_merkle() {
         use tapyrus::Txid;
 
@@ -1482,6 +1496,7 @@ mod test {
     }
 
     #[test]
+    #[ignore = "Requires Bitcoin Electrum server"]
     fn test_batch_transaction_get_merkle() {
         use tapyrus::Txid;
 
@@ -1574,6 +1589,7 @@ mod test {
     }
 
     #[test]
+    #[ignore = "Requires Bitcoin Electrum server"]
     fn test_txid_from_pos() {
         use tapyrus::Txid;
 
@@ -1587,6 +1603,7 @@ mod test {
     }
 
     #[test]
+    #[ignore = "Requires Bitcoin Electrum server"]
     fn test_txid_from_pos_with_merkle() {
         use tapyrus::Txid;
 
@@ -1607,12 +1624,14 @@ mod test {
     }
 
     #[test]
+    #[ignore = "Requires Bitcoin Electrum server"]
     fn test_ping() {
         let client = RawClient::new(get_test_server(), None).unwrap();
         client.ping().unwrap();
     }
 
     #[test]
+    #[ignore = "Requires Bitcoin Electrum server"]
     fn test_block_headers_subscribe() {
         let client = RawClient::new(get_test_server(), None).unwrap();
         let resp = client.block_headers_subscribe().unwrap();
@@ -1621,6 +1640,7 @@ mod test {
     }
 
     #[test]
+    #[ignore = "Requires Bitcoin Electrum server"]
     fn test_script_subscribe() {
         use std::str::FromStr;
 
@@ -1636,6 +1656,7 @@ mod test {
     }
 
     #[test]
+    #[ignore = "Requires Bitcoin Electrum server"]
     fn test_request_after_error() {
         let client = RawClient::new(get_test_server(), None).unwrap();
 
@@ -1644,6 +1665,7 @@ mod test {
     }
 
     #[test]
+    #[ignore = "Requires Bitcoin Electrum server"]
     fn test_raw_call() {
         use crate::types::Param;
 
@@ -1673,5 +1695,177 @@ mod test {
             000000000000000000000000000000000000000000000000000000000000000000\
             00000"
         )
+    }
+
+    // Tapyrus-specific tests using TDK testenv
+    //
+    // These tests use TDK testenv to spin up a local Tapyrus node (tapyrusd) and
+    // Electrum server (electrs) for integration testing. The tests automatically
+    // use Tapyrus dev mode configuration values from https://hub.docker.com/r/tapyrus/tapyrusd
+    //
+    // NOTE: These tests require tapyrusd and electrs binaries. On first run, testenv will
+    // automatically download them (this may take a few minutes).
+    //
+    // To run these tests:
+    //   cargo test --lib tapyrus -- --nocapture --test-threads=1
+    //
+    // Environment variables (optional - defaults are set automatically):
+    //   NETWORK_ID=1905960821
+    //   GENESIS_BLOCK=<dev mode genesis block hex>
+    //   PRIVATE_KEY=cUJN5RVzYWFoeY8rUztd47jzXCu1p57Ay8V7pqCzsBD3PEXN7Dd4
+    #[cfg(test)]
+    mod tapyrus_tests {
+        use tdk_testenv::electrum_client::ElectrumApi;
+        use tdk_testenv::tapyruscore_rpc::RpcApi;
+        use tapyrus::hashes::Hash;
+
+        // Tapyrus official dev mode configuration values
+        // Source: https://hub.docker.com/r/tapyrus/tapyrusd
+        const DEV_MODE_GENESIS_BLOCK: &str = "0100000000000000000000000000000000000000000000000000000000000000000000002b5331139c6bc8646bb4e5737c51378133f70b9712b75548cb3c05f9188670e7440d295e7300c5640730c4634402a3e66fb5d921f76b48d8972a484cc0361e66ef74f45e012103af80b90d25145da28c583359beb47b21796b2fe1a23c1511e443e7a64dfdb27d40e05f064662d6b9acf65ae416379d82e11a9b78cdeb3a316d1057cd2780e3727f70a61f901d10acbe349cd11e04aa6b4351e782c44670aefbe138e99a5ce75ace01010000000100000000000000000000000000000000000000000000000000000000000000000000000000ffffffff0100f2052a010000001976a91445d405b9ed450fec89044f9b7a99a4ef6fe2cd3f88ac00000000";
+        const DEV_MODE_NETWORK_ID: &str = "1905960821";
+        const DEV_MODE_PRIVATE_KEY: &str = "cUJN5RVzYWFoeY8rUztd47jzXCu1p57Ay8V7pqCzsBD3PEXN7Dd4";
+
+        /// Helper function to set dev mode environment variables if not already set
+        fn ensure_dev_mode_env() {
+            if std::env::var("NETWORK_ID").is_err() {
+                std::env::set_var("NETWORK_ID", DEV_MODE_NETWORK_ID);
+            }
+            if std::env::var("GENESIS_BLOCK").is_err() {
+                std::env::set_var("GENESIS_BLOCK", DEV_MODE_GENESIS_BLOCK);
+            }
+            if std::env::var("PRIVATE_KEY").is_err() {
+                std::env::set_var("PRIVATE_KEY", DEV_MODE_PRIVATE_KEY);
+            }
+        }
+
+        /// Helper function to create a TestEnv instance for Tapyrus tests
+        fn setup_tapyrus_env() -> anyhow::Result<tdk_testenv::TestEnv> {
+            // Ensure dev mode environment variables are set
+            ensure_dev_mode_env();
+
+            let env = tdk_testenv::TestEnv::new()?;
+            // Mine initial blocks to ensure the chain is active
+            env.mine_blocks(101, None)?;
+            env.wait_until_electrum_sees_block()?;
+            Ok(env)
+        }
+
+        #[test]
+        fn test_tapyrus_server_features() -> anyhow::Result<()> {
+            let env = setup_tapyrus_env()?;
+            let client = env.electrum_client();
+
+            let features = client.server_features()?;
+
+            // Verify genesis hash matches
+            let expected_genesis = env.genesis_hash()?;
+            assert_eq!(
+                features.genesis_hash,
+                expected_genesis.to_byte_array()
+            );
+
+            println!("Server version: {}", features.server_version);
+            println!("Protocol: {} - {}", features.protocol_min, features.protocol_max);
+
+            Ok(())
+        }
+
+        #[test]
+        fn test_tapyrus_block_header() -> anyhow::Result<()> {
+            let env = setup_tapyrus_env()?;
+            let client = env.electrum_client();
+
+            // Get block header at height 0 (genesis)
+            let header = client.block_header(0)?;
+
+            // Verify it's a valid Tapyrus header
+            assert_eq!(header.version, tapyrus::block::Version::ONE);
+
+            // Verify the header hash matches what tapyrusd reports
+            let genesis_hash = env.genesis_hash()?;
+            let computed_hash = header.block_hash();
+            assert_eq!(computed_hash, genesis_hash);
+
+            println!("Genesis header time: {}", header.time);
+            println!("Genesis hash: {}", genesis_hash);
+
+            Ok(())
+        }
+
+        #[test]
+        fn test_tapyrus_mine_and_query() -> anyhow::Result<()> {
+            let env = setup_tapyrus_env()?;
+            let client = env.electrum_client();
+
+            // Get initial block count
+            let initial_height = env.rpc_client().get_block_count()?;
+
+            // Mine 5 more blocks
+            env.mine_blocks(5, None)?;
+            env.wait_until_electrum_sees_block()?;
+
+            // Verify block count increased
+            let new_height = env.rpc_client().get_block_count()?;
+            assert_eq!(new_height, initial_height + 5);
+
+            // Query the latest block header via Electrum
+            let latest_header = client.block_header(new_height as usize)?;
+
+            // Verify it's a valid Tapyrus header
+            println!("Latest block height: {}", new_height);
+            println!("Latest block hash: {}", latest_header.block_hash());
+
+            Ok(())
+        }
+
+        #[test]
+        fn test_tapyrus_transaction_broadcast() -> anyhow::Result<()> {
+            let env = setup_tapyrus_env()?;
+            let client = env.electrum_client();
+
+            // Create a new address
+            let address = env.rpc_client().get_new_address(None)?.assume_checked();
+
+            // Send some coins
+            let amount = tapyrus::Amount::from_tap(50_000_000);
+            let txid = env.send(&address, amount)?;
+
+            println!("Sent transaction: {}", txid);
+
+            // Mine a block to confirm
+            env.mine_blocks(1, None)?;
+            env.wait_until_electrum_sees_block()?;
+
+            // Query transaction via Electrum
+            let tx_raw = client.transaction_get_raw(&txid.into())?;
+            assert!(!tx_raw.is_empty());
+
+            println!("Transaction confirmed in block");
+
+            Ok(())
+        }
+
+        #[test]
+        fn test_tapyrus_script_balance() -> anyhow::Result<()> {
+            let env = setup_tapyrus_env()?;
+            let client = env.electrum_client();
+
+            // Create a new address and send coins to it
+            let address = env.rpc_client().get_new_address(None)?.assume_checked();
+            let amount = tapyrus::Amount::from_tap(100_000_000);
+
+            env.send(&address, amount)?;
+            env.mine_blocks(1, None)?;
+            env.wait_until_electrum_sees_block()?;
+
+            // Query balance via Electrum
+            let script = address.script_pubkey();
+            let balance = client.script_get_balance(&script)?;
+
+            assert_eq!(balance.confirmed, 100_000_000);
+            println!("Address balance: {} taps", balance.confirmed);
+
+            Ok(())
+        }
     }
 }
