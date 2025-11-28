@@ -15,7 +15,7 @@ use std::time::Duration;
 #[allow(unused_imports)]
 use log::{debug, error, info, trace, warn};
 
-use tapyrus::consensus::encode::deserialize;
+use tapyrus::consensus::encode::Decodable;
 use tapyrus::hex::{DisplayHex, FromHex};
 use tapyrus::{Script, MalFixTxid};
 
@@ -878,11 +878,10 @@ impl<T: Read + Write> ElectrumApi for RawClient<T> {
         let result = self.call(req)?;
 
         let mut deserialized: GetHeadersRes = serde_json::from_value(result)?;
-        for i in 0..deserialized.count {
-            let (start, end) = (i * 80, (i + 1) * 80);
-            deserialized
-                .headers
-                .push(deserialize(&deserialized.raw_headers[start..end])?);
+        let mut cursor = std::io::Cursor::new(&deserialized.raw_headers);
+        for _ in 0..deserialized.count {
+            let header = tapyrus::block::Header::consensus_decode(&mut cursor)?;
+            deserialized.headers.push(header);
         }
         deserialized.raw_headers.clear();
 
